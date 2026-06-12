@@ -1,0 +1,11 @@
+# Analyzer hints for Chip's Challenge (USA, Europe).
+#
+# Consumed by m65c02recomp in phase 3. Format:
+#   code   $ADDR              force-disassemble at ADDR
+#   data   $START $END        treat [START,END) as data, don't decode
+#   name   $ADDR  symbol       give a discovered routine a real name
+#   rename $ADDR  hle_fn       intercept routine with hand-written C (HLE)
+#
+# Empty for now: meaningful entries require the decrypted, page-mapped code
+# image (see lynxrecomp/docs/BOOT.md) so addresses are real. Seed entries from
+# the reset/IRQ/NMI vectors once that lands.
