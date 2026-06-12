@@ -105,12 +105,34 @@ live window on Windows; `lynxrun --capture` dumps a frame sequence.
 ![Chip's Challenge title screen, rendered by lynxrun](screenshots/title.png)
 ![Chip's Challenge credits, rendered by lynxrun](screenshots/credits.png)
 
+## Running the *recompiled* C (the static-recompilation goal)
+
+`games/chipschallenge/src/main.c` runs the emitted `lynx_func_*` C directly (not
+the interpreter): it loads a post-init RAM image, registers the recompiled
+functions, and calls the entry; the runtime's cooperative ticks drive the timers
+and deliver the VBL interrupt into the recompiled handler. **The recompiled C
+renders the title screen** (`screenshots/recompiled-title.png`).
+
+Workflow (needs your cart dump + `lynxboot.img`, neither committed):
+
+```
+# 1. post-init RAM snapshot (jump tables built)
+lynxrun --snapshot "Chip's Challenge (USA, Europe).lnx" lynxboot.img ram.bin 60
+# 2. recompile, seeding the computed-jump gaps -> 317 functions, 0 gaps
+m65c02recomp recompbin ram.bin 0x0000 games/chipschallenge/generated \
+    0x18B7 0x2D0E 0x2E2C 0x2701 0x7D1B
+# 3. build + run the host (renders to a PPM)
+cmake --build build --config Release
+./build/games/chipschallenge/Release/chipschallenge.exe ram.bin 400 title.ppm
+```
+
+(The generated C is ROM-derived and not committed - a placeholder keeps the
+build green; regenerate it as above.)
+
+![Chip's Challenge title, rendered by the recompiled C](screenshots/recompiled-title.png)
+
 ## Open items
 
-- The game's `JMP ($1897,X)` jump-table dispatch is an external hook today —
-  needs computed-jump target resolution.
-- Better game-image function boundaries + a hints file
-  (`chipschallenge.hints.txt`) seeded from `$18B7`/`$1C40`/`$1C6E`.
-- Audio; blitter scaling/tilt + collision. Then an execution driver (frame loop
-  + IRQ dispatch) that runs the recompiled game against these peripherals to put
-  Chip's Challenge on screen.
+- Run from the *entry* snapshot (re-run reset from `$18B7` on a clean boot) at
+  full fidelity - currently the recompiled run uses the post-init snapshot.
+- Audio; blitter scaling/tilt + collision; interactive input in the host.
