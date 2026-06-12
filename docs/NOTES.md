@@ -54,11 +54,30 @@ hardware effects — the first recompiled-and-run Chip's Challenge code.
 > it locally from your own dump. The `generated/` placeholder keeps the build
 > green until then.
 
+## Full image + game code (phase 3 — done)
+
+`lynxexec` boots the cart with the real boot ROM + a modeled cart-read interface
+and snapshots RAM at the loader's `JMP ($004E)` hand-off:
+
+```
+lynxexec "Chip's Challenge (USA, Europe).lnx" lynxboot.img ram.bin
+# -> game entry $18B7, 64KB ram.bin
+m65c02recomp recompbin ram.bin 0x0000 out/ 0x18B7 0x1C40
+# -> discovers + emits the game's functions (reset, IRQ $1C40, main loop, ...)
+```
+
+- **Game entry: `$18B7`** (RAM image). Startup sets the stack, programs
+  Suzy/Mikey, maps vectors into RAM (`MAPCTL |= $08`), installs the IRQ handler
+  at **`$1C40`**, and enters the main loop at **`$1C6E`**.
+- The recompiled game C compiles + links against the runtime.
+- Needs `lynxboot.img` (the 512-byte boot ROM) — not committed; supply your own.
+
+Full detail: [`lynxrecomp/docs/IMAGE.md`](../lynxrecomp/docs/IMAGE.md).
+
 ## Open items
 
-- Reconstruct the full cart→RAM image + true game entry (the loader's
-  `JMP ($004E)` jumps to the game; that vector is set by the boot-ROM cart-read).
-  Model the loader + boot-ROM, or snapshot a reference emulator — then discovery
-  reaches the game's own code, not just the loader.
-- Seed `chipschallenge.hints.txt` from `$0200` and the timer-IRQ setup once the
-  full image is mapped.
+- The game's `JMP ($1897,X)` jump-table dispatch is an external hook today —
+  needs computed-jump target resolution.
+- Better game-image function boundaries + a hints file
+  (`chipschallenge.hints.txt`) seeded from `$18B7`/`$1C40`/`$1C6E`.
+- The Suzy/Mikey runtime (blitter, timers/IRQs, video, audio) to actually play.
