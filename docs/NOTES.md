@@ -74,10 +74,20 @@ m65c02recomp recompbin ram.bin 0x0000 out/ 0x18B7 0x1C40
 
 Full detail: [`lynxrecomp/docs/IMAGE.md`](../lynxrecomp/docs/IMAGE.md).
 
+## Runtime peripherals (phase 4 — in place)
+
+The toolkit runtime now implements the hardware the recompiled game drives:
+Mikey timers + interrupts (frame cadence), Mikey video readout (framebuffer +
+palette → RGB), the Suzy sprite blitter (SCB walk, packed/literal, 1–4 bpp,
+flip), and the Suzy math unit (multiply/divide). Each is unit-tested. See
+[`lynxrecomp/ROADMAP.md`](../lynxrecomp/ROADMAP.md) phase 4.
+
 ## Open items
 
 - The game's `JMP ($1897,X)` jump-table dispatch is an external hook today —
   needs computed-jump target resolution.
 - Better game-image function boundaries + a hints file
   (`chipschallenge.hints.txt`) seeded from `$18B7`/`$1C40`/`$1C6E`.
-- The Suzy/Mikey runtime (blitter, timers/IRQs, video, audio) to actually play.
+- Audio; blitter scaling/tilt + collision. Then an execution driver (frame loop
+  + IRQ dispatch) that runs the recompiled game against these peripherals to put
+  Chip's Challenge on screen.
