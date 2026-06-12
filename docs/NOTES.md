@@ -19,9 +19,27 @@ no hardware scaling/tilt, modest audio. That isolates the bring-up to the CPU
 translation, the timer/IRQ frame cadence, and a basic blitter — without the
 math-unit-heavy pseudo-3D path the racing/shooter titles need.
 
+## Boot (phase 2 — done)
+
+The cart's encrypted boot block decrypts cleanly with the toolkit:
+
+```
+m65c02recomp loader "Chip's Challenge (USA, Europe).lnx"
+```
+
+- First byte `$FB` → 5 encrypted blocks → a **250-byte secondary loader at
+  `$0200`** (verified: byte-identical to an independent reference, disassembles
+  as coherent 65SC02).
+- The loader clears the palette, programs Suzy, sets `DISPADR=$0400`
+  (framebuffer), and calls boot-ROM cart-read helpers (`$FE00`/`$FE4A`) to stream
+  the plaintext game into RAM.
+- Effective entry / analysis seed: **`$0200`**.
+
+Full detail: [`lynxrecomp/docs/BOOT.md`](../lynxrecomp/docs/BOOT.md).
+
 ## Open items
 
-- Phase 2: recover the post-boot code image + load map (see
-  [`lynxrecomp/docs/BOOT.md`](../lynxrecomp/docs/BOOT.md)).
-- Seed `chipschallenge.hints.txt` from the reset/IRQ/NMI vectors once the image
-  is mapped.
+- Phase 3: reconstruct the full cart→RAM image + true game entry (model the
+  loader + boot-ROM cart-read, or snapshot a reference emulator).
+- Seed `chipschallenge.hints.txt` from `$0200` and the timer-IRQ setup once the
+  full image is mapped.
