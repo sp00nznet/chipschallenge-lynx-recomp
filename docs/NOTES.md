@@ -37,9 +37,28 @@ m65c02recomp loader "Chip's Challenge (USA, Europe).lnx"
 
 Full detail: [`lynxrecomp/docs/BOOT.md`](../lynxrecomp/docs/BOOT.md).
 
+## Recompilation (phase 3 — pipeline works)
+
+The toolkit now decrypts, discovers functions, and emits runnable C:
+
+```
+m65c02recomp recomp "Chip's Challenge (USA, Europe).lnx" out/
+```
+
+On the loader this recovers 5 functions (entry `$0200`, plus `$020E`, `$02BD`,
+`$02C9`, `$02DE`) and emits readable `lynx_func_<addr>` C. The recovered routine
+`$02C9` (palette/SERCTL init) has been compiled and **executed** with correct
+hardware effects — the first recompiled-and-run Chip's Challenge code.
+
+> The generated C is derived from the ROM, so it is not committed here; generate
+> it locally from your own dump. The `generated/` placeholder keeps the build
+> green until then.
+
 ## Open items
 
-- Phase 3: reconstruct the full cart→RAM image + true game entry (model the
-  loader + boot-ROM cart-read, or snapshot a reference emulator).
+- Reconstruct the full cart→RAM image + true game entry (the loader's
+  `JMP ($004E)` jumps to the game; that vector is set by the boot-ROM cart-read).
+  Model the loader + boot-ROM, or snapshot a reference emulator — then discovery
+  reaches the game's own code, not just the loader.
 - Seed `chipschallenge.hints.txt` from `$0200` and the timer-IRQ setup once the
   full image is mapped.
