@@ -97,6 +97,12 @@ background. Two hardware bugs were found and fixed along the way: Suzy/video DMA
 must bypass the MAPCTL overlay (write DRAM directly), and the timer link chain
 is `0→2→4→1→3→5→7` (so VBL fires). Details: [`lynxrecomp/docs/RUN.md`](../lynxrecomp/docs/RUN.md).
 
+It also runs the full attract sequence — the Epyx circuit-board intro, then the
+title screen with scrolling "GAME DESIGN BY CHUCK SOMMERVILLE" credits — and
+input is wired (arrow keys / buttons → Suzy's JOYSTICK). `lynxrun --play` opens a
+live window on Windows; `lynxrun --capture` dumps a frame sequence.
+
+![Chip's Challenge title screen, rendered by lynxrun](screenshots/title.png)
 ![Chip's Challenge credits, rendered by lynxrun](screenshots/credits.png)
 
 ## Open items
