@@ -82,6 +82,23 @@ palette → RGB), the Suzy sprite blitter (SCB walk, packed/literal, 1–4 bpp,
 flip), and the Suzy math unit (multiply/divide). Each is unit-tested. See
 [`lynxrecomp/ROADMAP.md`](../lynxrecomp/ROADMAP.md) phase 4.
 
+## First pixels (phase 5)
+
+The execution driver runs Chip's Challenge to a rendered frame:
+
+```
+lynxrun "Chip's Challenge (USA, Europe).lnx" lynxboot.img frame.ppm
+```
+
+It boots the cart, runs the game against the real runtime peripherals (CPU
+interpreter + blitter + timers/IRQs + video), and renders the **credits screen**
+(`screenshots/credits.png`) — readable text on the Epyx circuit-board
+background. Two hardware bugs were found and fixed along the way: Suzy/video DMA
+must bypass the MAPCTL overlay (write DRAM directly), and the timer link chain
+is `0→2→4→1→3→5→7` (so VBL fires). Details: [`lynxrecomp/docs/RUN.md`](../lynxrecomp/docs/RUN.md).
+
+![Chip's Challenge credits, rendered by lynxrun](screenshots/credits.png)
+
 ## Open items
 
 - The game's `JMP ($1897,X)` jump-table dispatch is an external hook today —
