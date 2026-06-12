@@ -87,8 +87,18 @@ See [`docs/NOTES.md`](docs/NOTES.md) for the boot flow, the discovered entry
 points, and details, and the toolkit's
 [`ROADMAP.md`](https://github.com/sp00nznet/lynxrecomp/blob/main/ROADMAP.md).
 
+## Credits
+
+The recompiler, runtime, and host are original. The toolkit builds on prior
+Lynx reverse-engineering — see [`lynxrecomp`'s credits](https://github.com/sp00nznet/lynxrecomp#credits--references)
+(boot-decrypt reference, cc65 register layouts, Handy/Mednafen behaviour). The
+`lynxboot.img` boot ROM needed at runtime is Atari's copyright and is **not**
+shipped here; supply your own.
+
 ## License
 
-MIT — see [`LICENSE`](LICENSE). *Chip's Challenge* is a trademark of its
-respective owner; this project ships no game data and is an independent
-preservation/recompilation effort.
+MIT — see [`LICENSE`](LICENSE). *Chip's Challenge* is © / a trademark of its
+respective owner (Chuck Sommerville / its publishers); this project ships **no
+game data** — the screenshots are renders shown for documentation under fair
+use, and the recompiler-generated C is not committed. Independent, non-commercial
+preservation/recompilation work.
