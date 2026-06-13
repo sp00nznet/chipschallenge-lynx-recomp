@@ -40,9 +40,15 @@ interpreter** — it can only run the translated C. The runtime's cooperative ti
 drive the timers and deliver the VBL interrupt into the recompiled handler; the
 recompiled game builds its sprite lists and the emulated blitter draws them.
 
-Still to do: full-fidelity cold boot through the recompiled reset, interactive
-input in the host, and the blitter's hardware scaling/collision (which the
-title screen doesn't need).
+The toolkit now also provides **save states** and an optional **SDL2 + Dear
+ImGui frontend** (window, audio, keyboard/gamepad input, a menu with graphics/
+sound/controller options, and ComLynx multiplayer) — see the toolkit's
+[`docs/FRONTEND.md`](https://github.com/sp00nznet/lynxrecomp/blob/main/docs/FRONTEND.md).
+Wiring this host through that frontend for live input is the next step here.
+
+Still to do: full-fidelity cold boot through the recompiled reset, the
+interactive frontend host, and the blitter's hardware scaling/collision (which
+the title screen doesn't need).
 
 ## Build & run
 
